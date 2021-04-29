@@ -3,33 +3,33 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.optimize import curve_fit
 
-df_HCT = pd.read_excel('/Users/javier/Documents/University/5th semester/Experimental astronomy/Tarea_1_Instrumentaci_n_Radioastron_mica/HCT_AE2020A.xlsx', comment='#')
-
+df_HCT = pd.read_excel('/Users/javier/Documents/University/5th semester/Experimental astronomy/'
+                     'Tarea_1_Instrumentaci_n_Radioastron_mica/HCT_AE2020A.xlsx', comment='#')
 df_antdip = pd.read_excel('/Users/javier/Documents/University/5th semester/'
                      'Experimental astronomy/Tarea_1_Instrumentaci_n_Radioastron_mica/antdip_AE2021A.xlsx',
                       comment='#')              
 
-#print(df_HCT.head(20))
+
+def dBm_to_Watts(P):
+    output = 10**((P-30)/10)
+    return output
+
 
 def T_rec(T_H, T_C, y):
     output = (T_H-y*T_C)/(y-1)
     return output
 
 T_hot = df_HCT.iloc[2, 4]
-#print(T_hot)
 T_cold = df_HCT.iloc[3, 4]
-#print(T_cold)
-y = df_antdip.iloc[2, 2]/df_antdip.iloc[3, 2]  # pasar a watts
-#print(y)
+Y = dBm_to_Watts(float(df_HCT.iloc[2, 1]))/dBm_to_Watts(float(df_HCT.iloc[3, 1]))
 
-T_rec_exp = T_rec(T_hot, T_cold, 2.208)
+T_rec_exp = T_rec(T_hot, T_cold, Y)
+print(T_rec_exp)
 
 #print(T_rec_exp)
+path = '/Users/javier/Documents/University/5th semester/Experimental astronomy/Tarea_1_Instrumentaci_n_Radioastron_mica/sec_mierc_sem1_2021/'
 x=1
-v,T = np.genfromtxt('/Users/javier/Documents/University/5th semester/Experimental astronomy/'
-                    'Tarea_1_Instrumentaci_n_Radioastron_mica/sec_mierc_sem1_2021/sdf_11'+str(x)+'_11'+str(x), unpack = True, skip_header=108)
-
-
+v,T = np.genfromtxt(path+'sdf_11'+str(x)+'_11'+str(x), unpack = True, skip_header=108)
 
 def f_gauss(x,T0,mean,stdv):
     return T0*np.exp(-((x-mean)**2)/(2*(stdv**2)))
