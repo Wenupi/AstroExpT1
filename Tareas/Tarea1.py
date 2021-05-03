@@ -189,7 +189,7 @@ for i in range(11, 26):
         None
 
 # Se guarda el plot final con todos los subplots
-ax2[0,1].set_title('Espectro de Orión', fontsize=30, fontproperties=font)
+ax2[0,1].set_title('Espectro de la nebulosa de Orión', fontsize=30, fontproperties=font)
 ax2[2,0].set_ylabel('Temperatura [K]', fontsize=25, fontproperties=font)
 ax2[4,1].set_xlabel(r'Velocidad [$\frac{km}{s}$]', fontsize=25, fontproperties=font)
 fig2.tight_layout()    
@@ -247,8 +247,7 @@ fg_19_2 = [np.max(T_max_19[:,2]/3), 208.99, 1]
 coefs_19_2, cov_19_2 = curve_fit(f_gauss,T_max_19[:,0], T_max_19[:,2]/3, p0=fg_19_2)
 t0_19_2, M_19_2, S_19_2 = coefs_19_2[0],coefs_19_2[1],coefs_19_2[2]
 
-fig3, ax3 = plt.subplots(2, 1, figsize=(3.5, 4.5), constrained_layout=True,
-                        sharex=True, sharey=True)
+fig3, ax3 = plt.subplots(2, 1, figsize=(3.5, 4.5))
 
 ax3[0].plot(np.linspace(-19.510527, -19.260527, 20), f_gauss(np.linspace(-19.510527, -19.260527, 20), t0_208_1, M_208_1, S_208_1), color='#4a9923', label='Fit gaussiana', zorder=1)
 ax3[0].scatter(T_max_208[:,0], T_max_208[:,1]/3, marker='x', color='black', label='Temperaturas máxs.', zorder=2)
@@ -259,10 +258,11 @@ ax3[0].yaxis.set_tick_params(labelsize=7)
 ax3[1].xaxis.set_tick_params(labelsize=7)
 ax3[1].yaxis.set_tick_params(labelsize=7)
 ax3[0].set_title('Temperaturas máximas para lii=208', fontsize=9, fontproperties=font)
+ax3[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
 ax3[1].set_title('Temperaturas máximas para bii=-19', fontsize=9, fontproperties=font)
+ax3[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
 ax3[0].legend(fontsize=7)
-#fig3.supylabel('Percent Degrees Awarded To Women')
-#fig3.supxlabel('Year')
+fig3.supylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 fig3.tight_layout()    
 fig3.savefig("Fit_temperaturas_maxs")
 
@@ -276,7 +276,11 @@ ax4[0].yaxis.set_tick_params(labelsize=7)
 ax4[1].xaxis.set_tick_params(labelsize=7)
 ax4[1].yaxis.set_tick_params(labelsize=7)
 ax4[0].set_title('Temperaturas integradas para lii=208', fontsize=9, fontproperties=font)
+ax4[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
+ax4[0].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 ax4[1].set_title('Temperaturas integradas para bii=-19', fontsize=9, fontproperties=font)
+ax4[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
+ax4[1].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 ax4[0].legend(fontsize=7)
 fig4.tight_layout()    
 fig4.savefig("Fit_temperaturas_integradas_maxs")
