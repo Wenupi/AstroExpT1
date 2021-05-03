@@ -76,6 +76,11 @@ def f_gauss(x,T0,mean,stdv):
     """
     return T0*np.exp(-((x-mean)**2)/(2*(stdv**2)))
 
+def error(T_array):
+    errores_array = T_array[np.where(T_array<1)]
+    output = np.sqrt(np.mean(errores_array**2))
+    return output
+
 # Creación de una figura para colocar los 15 plots en una grilla de 5x3
 
 fig2, ax2 = plt.subplots(5, 3, figsize=(15,20))
@@ -84,6 +89,9 @@ fig2, ax2 = plt.subplots(5, 3, figsize=(15,20))
 # temperatura máxima y coordenadas galácticas
 
 T_maxs=[]
+T_promedios_2 = np.zeros((256, 5))
+T_promedios_3 = np.zeros((256, 5))
+errores_calculados = np.zeros((5, 3))
 
 # Para colocar los gráficos en la figura 2 se definen las position_i que indica
 # la columna en la que se colocará para su fila correspondiente
@@ -134,27 +142,48 @@ for i in range(11, 26):
         ax2[0, position1].plot(v, T, color='black')
         ax2[0, position1].plot(v, f_gauss(v, t0, M, S), color='#4a9923')
         ax2[0, position1].set_ylim((-1,32))
+        errores_calculados[0, position1] = error(T)
+        if position1<2:
+            T_promedios_2[:, 0] += T/3
+        T_promedios_3[:, 0] += T/3
         position1 += 1
+        
     elif T_maxs[i-11][2:4] == (208.863495, -19.385527):  # segunda posición
         ax2[1, position2].plot(v, T, color='black')
         ax2[1, position2].plot(v, f_gauss(v, t0, M, S), color='#4a9923')
         ax2[1, position2].set_ylim((-1,32))
+        errores_calculados[1, position2] = error(T)
+        if position2<2:
+            T_promedios_2[:, 1] += T/3
         position2 += 1
+        T_promedios_3[:, 1] += T/3
     elif T_maxs[i-11][2:4] == (208.996002, -19.385527):  # tercera posición
         ax2[2, position3].plot(v, T, color='black')
         ax2[2, position3].plot(v, f_gauss(v, t0, M, S), color='#4a9923')
         ax2[2, position3].set_ylim((-1,32))
+        errores_calculados[2, position3] = error(T)
+        if position3<2:
+            T_promedios_2[:, 2] += T/3
         position3 += 1
+        T_promedios_3[:, 2] += T/3
     elif T_maxs[i-11][2:4] == (209.12851, -19.385527):  # cuarta posición
         ax2[3, position4].plot(v, T, color='black')
         ax2[3, position4].plot(v, f_gauss(v, t0, M, S), color='#4a9923')
         ax2[3, position4].set_ylim((-1,32))
+        errores_calculados[3, position4] = error(T)
+        if position4<2:
+            T_promedios_2[:, 3] += T/3
         position4 += 1
+        T_promedios_3[:, 3] += T/3
     elif T_maxs[i-11][2:4] == (208.996002, -19.510527):  # quinta posición
         ax2[4, position5].plot(v, T, color='black')
         ax2[4, position5].plot(v, f_gauss(v, t0, M, S), color='#4a9923')
         ax2[4, position5].set_ylim((-1,32))
+        errores_calculados[4, position5] = error(T)
+        if position5<2:
+            T_promedios_2[:, 4] += T/3
         position5 += 1
+        T_promedios_3[:, 4] += T/3
     else:  # por si algo sale mal
         None
 
@@ -240,3 +269,5 @@ ax4[0].legend()
 ax4[1].legend()
 fig4.tight_layout()    
 fig4.savefig("Fit_temperaturas_integradas_maxs")
+
+# error_promediado = error(T_promedios[:, 0])
