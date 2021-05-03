@@ -95,6 +95,7 @@ errores_calculados = np.zeros((5, 3))
 
 # Para colocar los gráficos en la figura 2 se definen las position_i que indica
 # la columna en la que se colocará para su fila correspondiente
+
 position1 = 0
 position2 = 0
 position3 = 0
@@ -144,7 +145,7 @@ for i in range(11, 26):
         ax2[0, position1].set_ylim((-1,32))
         errores_calculados[0, position1] = error(T)
         if position1<2:
-            T_promedios_2[:, 0] += T/3
+            T_promedios_2[:, 0] += T/2
         T_promedios_3[:, 0] += T/3
         position1 += 1
         
@@ -154,7 +155,7 @@ for i in range(11, 26):
         ax2[1, position2].set_ylim((-1,32))
         errores_calculados[1, position2] = error(T)
         if position2<2:
-            T_promedios_2[:, 1] += T/3
+            T_promedios_2[:, 1] += T/2
         position2 += 1
         T_promedios_3[:, 1] += T/3
     elif T_maxs[i-11][2:4] == (208.996002, -19.385527):  # tercera posición
@@ -163,7 +164,7 @@ for i in range(11, 26):
         ax2[2, position3].set_ylim((-1,32))
         errores_calculados[2, position3] = error(T)
         if position3<2:
-            T_promedios_2[:, 2] += T/3
+            T_promedios_2[:, 2] += T/2
         position3 += 1
         T_promedios_3[:, 2] += T/3
     elif T_maxs[i-11][2:4] == (209.12851, -19.385527):  # cuarta posición
@@ -172,7 +173,7 @@ for i in range(11, 26):
         ax2[3, position4].set_ylim((-1,32))
         errores_calculados[3, position4] = error(T)
         if position4<2:
-            T_promedios_2[:, 3] += T/3
+            T_promedios_2[:, 3] += T/2
         position4 += 1
         T_promedios_3[:, 3] += T/3
     elif T_maxs[i-11][2:4] == (208.996002, -19.510527):  # quinta posición
@@ -181,7 +182,7 @@ for i in range(11, 26):
         ax2[4, position5].set_ylim((-1,32))
         errores_calculados[4, position5] = error(T)
         if position5<2:
-            T_promedios_2[:, 4] += T/3
+            T_promedios_2[:, 4] += T/2
         position5 += 1
         T_promedios_3[:, 4] += T/3
     else:  # por si algo sale mal
@@ -190,12 +191,9 @@ for i in range(11, 26):
 # Se guarda el plot final con todos los subplots
 ax2[0,1].set_title('Espectro de Orión', fontsize=30, fontproperties=font)
 ax2[2,0].set_ylabel('Temperatura [K]', fontsize=25, fontproperties=font)
-ax2[4,1].set_xlabel(r'Velocidad $\frac{km}{s}$', fontsize=25, fontproperties=font)
+ax2[4,1].set_xlabel(r'Velocidad [$\frac{km}{s}$]', fontsize=25, fontproperties=font)
 fig2.tight_layout()    
 fig2.savefig("Espectros")
-
-#print('La temperatura integrada es:', T_integrada)
-#print('Las temperaturas máximas son:', T_maxs)
 
 T_max_208 = np.zeros((3,3))
 T_max_208[0, 0]=-19.510527
@@ -214,13 +212,12 @@ for i in range(0, 15):
             T_max_208[2, 1]+=T_maxs[i][1]
             T_max_208[2, 2]+=T_maxs[i][4]
 
-print('Temperaturas T_208', T_max_208)
+# print('Temperaturas T_208', T_max_208)
 
 T_max_19 = np.zeros((3,3))
 T_max_19[0, 0]=208.863495
 T_max_19[1, 0]=208.996002
 T_max_19[2, 0]=209.12851
-
 
 for i in range(0, 15):
     if T_maxs[i][3]==-19.385527:
@@ -250,24 +247,48 @@ fg_19_2 = [np.max(T_max_19[:,2]/3), 208.99, 1]
 coefs_19_2, cov_19_2 = curve_fit(f_gauss,T_max_19[:,0], T_max_19[:,2]/3, p0=fg_19_2)
 t0_19_2, M_19_2, S_19_2 = coefs_19_2[0],coefs_19_2[1],coefs_19_2[2]
 
-fig3, ax3 = plt.subplots(2, 1, figsize=(3.5, 6.5))
-ax3[0].scatter(T_max_208[:,0], T_max_208[:,1]/3, color='black', label='lii=208')
-ax3[0].plot(np.linspace(-19.510527, -19.260527, 20), f_gauss(np.linspace(-19.510527, -19.260527, 20), t0_208_1, M_208_1, S_208_1), color='#4a9923')
-ax3[1].scatter(T_max_19[:,0], T_max_19[:,1]/3, color='black', label='bii=-19')
-ax3[1].plot(np.linspace(208.863495, 209.12851, 20), f_gauss(np.linspace(208.863495, 209.12851, 20), t0_19_1, M_19_1, S_19_1), color='#4a9923')
-ax3[0].legend()
-ax3[1].legend()
+fig3, ax3 = plt.subplots(2, 1, figsize=(3.5, 4.5), constrained_layout=True,
+                        sharex=True, sharey=True)
+
+ax3[0].plot(np.linspace(-19.510527, -19.260527, 20), f_gauss(np.linspace(-19.510527, -19.260527, 20), t0_208_1, M_208_1, S_208_1), color='#4a9923', label='Fit gaussiana', zorder=1)
+ax3[0].scatter(T_max_208[:,0], T_max_208[:,1]/3, marker='x', color='black', label='Temperaturas máxs.', zorder=2)
+ax3[1].scatter(T_max_19[:,0], T_max_19[:,1]/3, marker='x', color='black', zorder=2)
+ax3[1].plot(np.linspace(208.863495, 209.12851, 20), f_gauss(np.linspace(208.863495, 209.12851, 20), t0_19_1, M_19_1, S_19_1), color='#4a9923', zorder=1)
+ax3[0].xaxis.set_tick_params(labelsize=7)
+ax3[0].yaxis.set_tick_params(labelsize=7)
+ax3[1].xaxis.set_tick_params(labelsize=7)
+ax3[1].yaxis.set_tick_params(labelsize=7)
+ax3[0].set_title('Temperaturas máximas para lii=208', fontsize=9, fontproperties=font)
+ax3[1].set_title('Temperaturas máximas para bii=-19', fontsize=9, fontproperties=font)
+ax3[0].legend(fontsize=7)
+#fig3.supylabel('Percent Degrees Awarded To Women')
+#fig3.supxlabel('Year')
 fig3.tight_layout()    
 fig3.savefig("Fit_temperaturas_maxs")
 
-fig4, ax4 = plt.subplots(2, 1, figsize=(3.5, 6.5))
-ax4[0].scatter(T_max_208[:,0], T_max_208[:,2]/3, color='black', label='lii=208')
-ax4[0].plot(np.linspace(-19.510527, -19.260527, 20), f_gauss(np.linspace(-19.510527, -19.260527, 20), t0_208_2, M_208_2, S_208_2), color='#4a9923')
-ax4[1].scatter(T_max_19[:,0], T_max_19[:,2]/3, color='black', label='bii=-19')
-ax4[1].plot(np.linspace(208.863495, 209.12851, 20), f_gauss(np.linspace(208.863495, 209.12851, 20), t0_19_2, M_19_2, S_19_2), color='#4a9923')
-ax4[0].legend()
-ax4[1].legend()
+fig4, ax4 = plt.subplots(2, 1, figsize=(3.5, 4.5))
+ax4[0].scatter(T_max_208[:,0], T_max_208[:,2]/3, marker='x', color='black', label='Temperaturas integradas', zorder=2)
+ax4[0].plot(np.linspace(-19.510527, -19.260527, 20), f_gauss(np.linspace(-19.510527, -19.260527, 20), t0_208_2, M_208_2, S_208_2), color='#4a9923', label='Fit gaussiana', zorder=1)
+ax4[1].scatter(T_max_19[:,0], T_max_19[:,2]/3, marker='x', color='black', zorder=2)
+ax4[1].plot(np.linspace(208.863495, 209.12851, 20), f_gauss(np.linspace(208.863495, 209.12851, 20), t0_19_2, M_19_2, S_19_2), color='#4a9923', zorder=1)
+ax4[0].xaxis.set_tick_params(labelsize=7)
+ax4[0].yaxis.set_tick_params(labelsize=7)
+ax4[1].xaxis.set_tick_params(labelsize=7)
+ax4[1].yaxis.set_tick_params(labelsize=7)
+ax4[0].set_title('Temperaturas integradas para lii=208', fontsize=9, fontproperties=font)
+ax4[1].set_title('Temperaturas integradas para bii=-19', fontsize=9, fontproperties=font)
+ax4[0].legend(fontsize=7)
 fig4.tight_layout()    
 fig4.savefig("Fit_temperaturas_integradas_maxs")
 
+#errores_promediados
+error_promedios_2 = np.zeros(5)
+error_promedios_3 = np.zeros(5)
+error_position_promedio = np.zeros(5)
+for i in range(0, 5):
+    error_promedios_2[i]=error(T_promedios_2[:, i])
+    error_promedios_3[i]=error(T_promedios_3[:, i])
+    error_position_promedio[i]=np.mean(errores_calculados[i,:])
+
+#error_calculados_promedio = np.mean(errores_calculados)
 # error_promediado = error(T_promedios[:, 0])
