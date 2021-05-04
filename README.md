@@ -1,2 +1,2 @@
 # AstroExpT1
-MACACOOOO00
+Que tengas un buen día.
