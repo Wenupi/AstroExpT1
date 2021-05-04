@@ -5,6 +5,8 @@ from scipy.optimize import curve_fit
 import glob
 from scipy.integrate import trapz, simps
 from matplotlib.font_manager import FontProperties
+from mpl_toolkits.mplot3d import Axes3D
+from scipy.stats import multivariate_normal
 
 df_HCT = pd.read_excel('/Users/javier/Documents/University/5th semester/Experimental astronomy/'
                      'Tarea_1_Instrumentaci_n_Radioastron_mica/HCT_AE2020A.xlsx', comment='#')
@@ -51,13 +53,13 @@ font = FontProperties()
 font.set_family('serif')
 
 fig1, ax1 = plt.subplots(figsize=(5, 3.5))
-ax1.plot(x_lineal, y_lineal, color='#4a9923', label='Ajuste lineal')
-ax1.scatter(secante_negativa, DeltaOmega_ln, marker='x', color='black', label='Datos')
-ax1.set_title(r'Fiteo $\tau_w$', fontsize=15, fontproperties=font)
-ax1.set_xlabel('-sec($E_l$)', fontsize=12, fontproperties=font)
+ax1.plot(x_lineal, y_lineal, color='#4a9923', label='Ajuste lineal', zorder=1)
+ax1.scatter(secante_negativa, DeltaOmega_ln, marker='x', color='black', label='Datos', zorder=2)
+ax1.set_title(r'Fiteo $\tau_0$', fontsize=15, fontproperties=font)
+ax1.set_xlabel('-cosec($E_l$)', fontsize=12, fontproperties=font)
 ax1.set_ylabel(r'ln($\Delta$ W)', fontsize=12, fontproperties=font)
 
-ax1.text(-6, -13.75, '$y=$'+str('%.3f'%(tau_0))+'x'+str('%.3f'%(z[1])), fontsize=10)
+ax1.text(-6, -13.75, '$y=$'+str('%.3f'%(tau_0))+'x'+str('%.3f'%(z[1])), fontsize=10, fontproperties=font)
 ax1.legend()
 ax1.grid()
 fig1.tight_layout()    
@@ -131,7 +133,7 @@ for i in range(11, 26):
     t0, M, S = coefs[0],coefs[1],coefs[2]  # valor de temperatura máxima, media y desviación estándar
 
     # Se añaden los valores mencionados anteriormente, en T_max
-    T_integrada_i = trapz(T)
+    T_integrada_i = -trapz(T, v)
     T_maxs.append(('sdf_1'+str(i), t0, lii, bii, T_integrada_i))
 
     # Debido a que se realizaron mediciones en 5 posiciones diferentes, se ocupan condicionales
@@ -189,7 +191,7 @@ for i in range(11, 26):
         None
 
 # Se guarda el plot final con todos los subplots
-ax2[0,1].set_title('Espectro de la nebulosa de Orión', fontsize=30, fontproperties=font)
+ax2[0,1].set_title('Espectros de la nebulosa de Orión', fontsize=30, fontproperties=font)
 ax2[2,0].set_ylabel('Temperatura [K]', fontsize=25, fontproperties=font)
 ax2[4,1].set_xlabel(r'Velocidad [$\frac{km}{s}$]', fontsize=25, fontproperties=font)
 fig2.tight_layout()    
@@ -257,12 +259,14 @@ ax3[0].xaxis.set_tick_params(labelsize=7)
 ax3[0].yaxis.set_tick_params(labelsize=7)
 ax3[1].xaxis.set_tick_params(labelsize=7)
 ax3[1].yaxis.set_tick_params(labelsize=7)
-ax3[0].set_title('Temperaturas máximas para lii=208', fontsize=9, fontproperties=font)
+ax3[0].set_title('Temperaturas máximas para longitud central', fontsize=9, fontproperties=font)
 ax3[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
-ax3[1].set_title('Temperaturas máximas para bii=-19', fontsize=9, fontproperties=font)
+ax3[0].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
+ax3[1].set_title('Temperaturas máximas para latitud central', fontsize=9, fontproperties=font)
 ax3[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
+ax3[1].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 ax3[0].legend(fontsize=7)
-fig3.supylabel('Temperatura [K]', fontsize=8, fontproperties=font)
+#fig3.supylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 fig3.tight_layout()    
 fig3.savefig("Fit_temperaturas_maxs")
 
@@ -275,17 +279,16 @@ ax4[0].xaxis.set_tick_params(labelsize=7)
 ax4[0].yaxis.set_tick_params(labelsize=7)
 ax4[1].xaxis.set_tick_params(labelsize=7)
 ax4[1].yaxis.set_tick_params(labelsize=7)
-ax4[0].set_title('Temperaturas integradas para lii=208', fontsize=9, fontproperties=font)
+ax4[0].set_title('Temperaturas integradas para longitud central', fontsize=9, fontproperties=font)
 ax4[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
-ax4[0].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
-ax4[1].set_title('Temperaturas integradas para bii=-19', fontsize=9, fontproperties=font)
+ax4[0].set_ylabel('T integrada [K km/s]', fontsize=8, fontproperties=font)
+ax4[1].set_title('Temperaturas integradas para latitud central', fontsize=9, fontproperties=font)
 ax4[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
-ax4[1].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
+ax4[1].set_ylabel('T integrada [K km/s]', fontsize=8, fontproperties=font)
 ax4[0].legend(fontsize=7)
 fig4.tight_layout()    
 fig4.savefig("Fit_temperaturas_integradas_maxs")
 
-#errores_promediados
 error_promedios_2 = np.zeros(5)
 error_promedios_3 = np.zeros(5)
 error_position_promedio = np.zeros(5)
@@ -293,6 +296,3 @@ for i in range(0, 5):
     error_promedios_2[i]=error(T_promedios_2[:, i])
     error_promedios_3[i]=error(T_promedios_3[:, i])
     error_position_promedio[i]=np.mean(errores_calculados[i,:])
-
-#error_calculados_promedio = np.mean(errores_calculados)
-# error_promediado = error(T_promedios[:, 0])
