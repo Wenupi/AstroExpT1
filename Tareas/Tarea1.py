@@ -79,6 +79,7 @@ def f_gauss(x,T0,mean,stdv):
     return T0*np.exp(-((x-mean)**2)/(2*(stdv**2)))
 
 def error(T_array):
+    #errores_array = T_array
     errores_array = T_array[np.where(T_array<1)]
     output = np.sqrt(np.mean(errores_array**2))
     return output
@@ -260,13 +261,12 @@ ax3[0].yaxis.set_tick_params(labelsize=7)
 ax3[1].xaxis.set_tick_params(labelsize=7)
 ax3[1].yaxis.set_tick_params(labelsize=7)
 ax3[0].set_title('Temperaturas máximas para longitud central', fontsize=9, fontproperties=font)
-ax3[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
+ax3[0].set_xlabel(r'Latitud [$^{\circ}$]', fontsize=8, fontproperties=font)
 ax3[0].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 ax3[1].set_title('Temperaturas máximas para latitud central', fontsize=9, fontproperties=font)
-ax3[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
+ax3[1].set_xlabel(r'Longitud [$^{\circ}$]', fontsize=8, fontproperties=font)
 ax3[1].set_ylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 ax3[0].legend(fontsize=7)
-#fig3.supylabel('Temperatura [K]', fontsize=8, fontproperties=font)
 fig3.tight_layout()    
 fig3.savefig("Fit_temperaturas_maxs")
 
@@ -280,10 +280,10 @@ ax4[0].yaxis.set_tick_params(labelsize=7)
 ax4[1].xaxis.set_tick_params(labelsize=7)
 ax4[1].yaxis.set_tick_params(labelsize=7)
 ax4[0].set_title('Temperaturas integradas para longitud central', fontsize=9, fontproperties=font)
-ax4[0].set_xlabel('Latitud', fontsize=8, fontproperties=font)
+ax4[0].set_xlabel(r'Latitud [$^{\circ}$]', fontsize=8, fontproperties=font)
 ax4[0].set_ylabel('T integrada [K km/s]', fontsize=8, fontproperties=font)
 ax4[1].set_title('Temperaturas integradas para latitud central', fontsize=9, fontproperties=font)
-ax4[1].set_xlabel('Longitud', fontsize=8, fontproperties=font)
+ax4[1].set_xlabel(r'Longitud [$^{\circ}$]', fontsize=8, fontproperties=font)
 ax4[1].set_ylabel('T integrada [K km/s]', fontsize=8, fontproperties=font)
 ax4[0].legend(fontsize=7)
 fig4.tight_layout()    
@@ -292,6 +292,7 @@ fig4.savefig("Fit_temperaturas_integradas_maxs")
 error_promedios_2 = np.zeros(5)
 error_promedios_3 = np.zeros(5)
 error_position_promedio = np.zeros(5)
+#error_primera_pasada = errores_calculados[:, 0]
 for i in range(0, 5):
     error_promedios_2[i]=error(T_promedios_2[:, i])
     error_promedios_3[i]=error(T_promedios_3[:, i])
